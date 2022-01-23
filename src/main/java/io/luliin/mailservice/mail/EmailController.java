@@ -1,7 +1,10 @@
 package io.luliin.mailservice.mail;
 
 import com.sendgrid.Response;
+import io.luliin.mailservice.domain.AppUser;
+import io.luliin.mailservice.dto.MailResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,19 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/mail")
 public class EmailController {
 
     private final EmailService emailService;
 
-    @PostMapping("/send")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest emailRequest) {
-        final Response response = emailService.sendEmail(emailRequest);
-
-        if(response.getStatusCode()==200 || response.getStatusCode()==202) {
-            return ResponseEntity.ok("Email was sent successfully");
-        }
-        return new ResponseEntity<>("Email failed", HttpStatus.NOT_FOUND);
+    @PostMapping("/welcome")
+    public ResponseEntity<?> sendEmail(@RequestBody AppUser appUser) {
+        emailService.sendWelcomeMessage(appUser);
+        final String message = String.format("Welcome message sent to %s", appUser.getEmail());
+        log.info(message);
+        return ResponseEntity.ok(new MailResponse(message));
 
 
     }

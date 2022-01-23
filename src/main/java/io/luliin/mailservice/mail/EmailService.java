@@ -5,14 +5,16 @@ import com.sendgrid.Request;
 import com.sendgrid.Response;
 import com.sendgrid.SendGrid;
 import com.sendgrid.helpers.mail.Mail;
-import com.sendgrid.helpers.mail.objects.Content;
-import com.sendgrid.helpers.mail.objects.Email;
+import io.luliin.mailservice.domain.AppUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 /**
  * @author Julia Wigenstedt
@@ -27,32 +29,42 @@ public class EmailService {
 
     @Value("${sendgrid.email}")
     private String fromEmail;
+    @Value("${sendgrid.welcome.template}")
+    private String WELCOME_MESSAGE_TEMPLATE_ID;
 
 
-    public Response sendEmail(EmailRequest emailRequest) {
+    /**
+     * Sends and email to a user that created an account
+     * @param appUser AppUser object who to send email to
+     */
+    public void sendWelcomeMessage(AppUser appUser) {
+        Payload payload = new Payload(fromEmail, "Välkommen till TwoShop!", WELCOME_MESSAGE_TEMPLATE_ID, appUser, TemplateEnum.CREATE_ACCOUNT);
+        throwErrorIfStatusCodeNotValid(sendEmail(payload.getMailWithPayload()));
+    }
 
-        Mail mail = new Mail(new Email(fromEmail),
-                emailRequest.getSubject(),
-                new Email(emailRequest.getTo()),
-                new Content("text/plain" ,emailRequest.getBody()));
 
-        mail.setReplyTo(new Email(fromEmail));
-        Request request = new Request();
-        Response response = null;
+    public Response sendEmail(Mail payload) {
+
         try {
-            log.info("In send body");
+            Request request = new Request();
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            response = this.sendGrid.api(request);
-            log.info("Response {}", response);
-            log.info("Response status code {}", response.getStatusCode());
-            log.info("Response body {}", response.getBody());
-
-        } catch (IOException e) {
-            log.error("sendEmail(): Error message {}", e.getMessage(), e);
+            request.setBody(payload.build());
+            Response response = sendGrid.api(request);
+            log.info("Status code: {}", response.getStatusCode());
+            return response;
+        } catch (IOException ex) {
+            throw new ResponseStatusException(BAD_REQUEST, ex.getMessage());
         }
+    }
 
-        return response;
+    /**
+     * Check if the status code from the request is 200-299
+     * @param response the response to check the status code of
+     * @throws RuntimeException if status code is not a 2xx
+     */
+    public void throwErrorIfStatusCodeNotValid(Response response) {
+        var statusCode = response.getStatusCode();
+        if(statusCode < 200 || statusCode > 299) throw new RuntimeException("Could not send email");
     }
 }
