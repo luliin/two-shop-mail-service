@@ -13,12 +13,13 @@ public class Template {
      * Setting the variables to use for sending information to twilio about
      * the content in the email to send. The key must match the create account template
      * key on twilio to work
-     * @param firstName First name of email recipient
+     * @param user First name of email recipient
      * @return Personalization object with all the variables used in the template
      */
-    public static Personalization getWelcomeMessagePersonalization(String firstName) {
+    public static Personalization getWelcomeMessagePersonalization(AppUser user) {
         Personalization personalization = new Personalization();
-        personalization.addDynamicTemplateData("first_name", firstName);
+        personalization.addDynamicTemplateData("firstName", user.getFirstName());
+        personalization.addDynamicTemplateData("username", user.getUsername());
         return personalization;
     }
 

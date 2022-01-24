@@ -14,21 +14,15 @@ public class Payload {
 
     public Payload(String from, String subject, String templateId, AppUser user, TemplateEnum templateEnum) {
         this.mail = new Mail();
-        // select with personalization we wanna use
         Personalization personalization = new Personalization();
         switch (templateEnum) {
-            case CREATE_ACCOUNT: personalization  = Template.getWelcomeMessagePersonalization(user.getUsername()); break;
+            case CREATE_ACCOUNT: personalization  = Template.getWelcomeMessagePersonalization(user); break;
             case NEW_PASSWORD: personalization = Template.getNewPasswordPersonalization(user); break;
         }
-        // Add who you wanna send the email to
         personalization.addTo(new Email(user.getEmail()));
-        // set who the sender is
-        mail.setFrom(new Email(from));
-        // set the subject line of the email
+        mail.setFrom(new Email(from, "TwoShop Team"));
         mail.setSubject(subject);
-        // add personal variables that match the template on twilio
         mail.addPersonalization(personalization);
-        // the id for the template
         mail.setTemplateId(templateId);
     }
 
