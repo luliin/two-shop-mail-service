@@ -32,7 +32,6 @@ public class Template {
     public static Personalization getNewPasswordPersonalization(AppUser user) {
         Personalization personalization = new Personalization();
         personalization.addDynamicTemplateData("first_name", user.getFirstName());
-        personalization.addDynamicTemplateData("last_name", user.getLastName());
         personalization.addDynamicTemplateData("updated_password", user.getUpdatedPassword());
         return personalization;
     }

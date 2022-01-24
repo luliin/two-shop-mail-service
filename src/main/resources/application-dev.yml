@@ -1,0 +1,21 @@
+sendgrid:
+  email: ${SENDGRID_EMAIL}
+  welcome:
+    template: ${SENDGRID_WELCOME}
+  password:
+    template: ${SENDGRID_PASSWORD}
+
+security:
+  welcomeURL: ${WELCOME_MAIL_URL}
+
+spring:
+  sendgrid:
+    api-key: ${SENDGRID_BASIC}
+  rabbitmq:
+    password: ${POSTGRES_PASSWORD}
+    username: ${POSTGRES_USER}
+    listener:
+      direct:
+        default-requeue-rejected: false
+      simple:
+        default-requeue-rejected: false
