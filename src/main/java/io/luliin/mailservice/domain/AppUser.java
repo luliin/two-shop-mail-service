@@ -17,4 +17,6 @@ public class AppUser {
     private String firstName;
     private String lastName;
     private String updatedPassword;
+    private String ownerUsername;
+    private String shoppingListName;
 }

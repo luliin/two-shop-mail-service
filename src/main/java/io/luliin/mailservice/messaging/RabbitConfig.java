@@ -33,6 +33,11 @@ public class RabbitConfig{
     }
 
     @Bean
+    public Queue queue3() {
+        return new Queue("collaborator");
+    }
+
+    @Bean
     public Binding welcomeBinding() {
         return BindingBuilder.bind(queue1())
                 .to(mailTopic())
@@ -44,6 +49,13 @@ public class RabbitConfig{
         return BindingBuilder.bind(queue2())
                 .to(mailTopic())
                 .with("password.*");
+    }
+
+    @Bean
+    public Binding collaboratorBinding() {
+        return BindingBuilder.bind(queue3())
+                .to(mailTopic())
+                .with("collaborator.*");
     }
 
     @Bean

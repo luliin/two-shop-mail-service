@@ -6,5 +6,6 @@ package io.luliin.mailservice.mail;
  */
 public enum TemplateEnum {
     CREATE_ACCOUNT,
-    NEW_PASSWORD
+    NEW_PASSWORD,
+    COLLABORATOR
 }
