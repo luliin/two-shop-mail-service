@@ -33,6 +33,8 @@ public class EmailService {
     private String WELCOME_MESSAGE_TEMPLATE_ID;
     @Value("${sendgrid.password.template}")
     private String PASSWORD_MESSAGE_TEMPLATE_ID;
+    @Value("${sendgrid.collaborator.template}")
+    private String COLLABORATOR_MESSAGE_TEMPLATE_ID;
 
 
     /**
@@ -50,6 +52,15 @@ public class EmailService {
      */
     public void sendPasswordMessage(AppUser appUser) {
         Payload payload = new Payload(fromEmail, "Ditt lösenord har återställts", PASSWORD_MESSAGE_TEMPLATE_ID, appUser, TemplateEnum.NEW_PASSWORD);
+        throwErrorIfStatusCodeNotValid(sendEmail(payload.getMailWithPayload()));
+    }
+
+    /**
+     * Sends an email when a user has requested a password reset
+     * @param appUser AppUser object to send email to and to populate dynamic fields in email
+     */
+    public void sendCollaboratorMessage(AppUser appUser) {
+        Payload payload = new Payload(fromEmail, "Du har fått en inbjudan!", PASSWORD_MESSAGE_TEMPLATE_ID, appUser, TemplateEnum.COLLABORATOR);
         throwErrorIfStatusCodeNotValid(sendEmail(payload.getMailWithPayload()));
     }
 

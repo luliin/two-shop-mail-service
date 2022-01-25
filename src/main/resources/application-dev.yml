@@ -4,7 +4,8 @@ sendgrid:
     template: ${SENDGRID_WELCOME}
   password:
     template: ${SENDGRID_PASSWORD}
-
+  collaborator:
+    template: ${SENDGRID_COLLABORATOR}
 security:
   welcomeURL: ${WELCOME_MAIL_URL}
 

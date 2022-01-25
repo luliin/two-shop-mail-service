@@ -18,6 +18,7 @@ public class Payload {
         switch (templateEnum) {
             case CREATE_ACCOUNT: personalization  = Template.getWelcomeMessagePersonalization(user); break;
             case NEW_PASSWORD: personalization = Template.getNewPasswordPersonalization(user); break;
+            case COLLABORATOR: personalization = Template.getCollaboratorPersonalization(user); break;
         }
         personalization.addTo(new Email(user.getEmail()));
         mail.setFrom(new Email(from, "TwoShop Team"));

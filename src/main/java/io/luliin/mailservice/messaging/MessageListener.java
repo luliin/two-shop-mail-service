@@ -33,9 +33,18 @@ public class MessageListener {
     @RabbitListener(queues = "password")
     public void receivePasswordRequest(AppUser appUser) {
         emailService.sendPasswordMessage(appUser);
-        final String message = String.format("Welcome message sent to %s", appUser.getEmail());
+        final String message = String.format("Reset password message sent to %s", appUser.getEmail());
         log.info(message);
         rabbitTemplate.convertAndSend("mail", "confirm.password", new MailResponse(message));
+    }
+
+
+    @RabbitListener(queues = "collaborator")
+    public void receiveCollaboratorRequest(AppUser appUser) {
+        emailService.sendCollaboratorMessage(appUser);
+        final String message = String.format("Collaborator invitation message sent to %s", appUser.getEmail());
+        log.info(message);
+        rabbitTemplate.convertAndSend("mail", "confirm.collaborator", new MailResponse(message));
     }
 
 

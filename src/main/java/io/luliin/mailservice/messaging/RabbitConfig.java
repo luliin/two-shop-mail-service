@@ -32,6 +32,7 @@ public class RabbitConfig{
         return new Queue("password");
     }
 
+
     @Bean
     public Queue queue3() {
         return new Queue("collaborator");
